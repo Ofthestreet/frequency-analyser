@@ -168,7 +168,9 @@ tracé de la portée sont écrits dans le projet.
 ./gradlew installDebug        # sur un téléphone branché en débogage USB
 ```
 
-Chaque push construit l'APK dans GitHub Actions ; un tag `v*` publie en plus une *release*.
+Chaque push construit l'APK dans GitHub Actions. Pour publier une *release* : onglet **Actions** →
+*Tests et APK* → **Run workflow**, en renseignant le tag (`v1.0.1`, par exemple) ; le workflow crée le
+tag, la release et y attache l'APK. Pousser un tag `v*` produit le même résultat.
 
 ### Comment la mesure est faite
 

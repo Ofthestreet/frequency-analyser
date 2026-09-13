@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Publier une release sous ce tag (vide = pas de release)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -41,13 +46,15 @@ jobs:
           if-no-files-found: error
 
       - name: Publier la release et son APK
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.release_tag || github.ref_name }}
         run: |
           cp app/build/outputs/apk/debug/app-debug.apk frequency-analyser.apk
-          gh release create "$GITHUB_REF_NAME" frequency-analyser.apk \
-            --title "$GITHUB_REF_NAME" \
+          gh release create "$TAG" frequency-analyser.apk \
+            --target "$GITHUB_SHA" \
+            --title "$TAG" \
             --notes "Téléchargez **frequency-analyser.apk** ci-dessous, ouvrez-le sur le téléphone et autorisez l'installation depuis cette source. Les étapes détaillées sont dans le README."
 
       - name: Publier les rapports en cas d'échec
